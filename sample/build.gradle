@@ -1,6 +1,13 @@
 apply plugin: 'war'
 apply plugin: 'com.bmuschko.tomcat'
 
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+//configurations.all {
+//    resolutionStrategy {
+//        force 'xml-apis:xml-apis:1.4.01'
+//    }
+//}
 // Disable publishing to repository for the sample project
 if (tasks.findByPath('artifactoryPublish')) {
     artifactoryPublish.enabled = false

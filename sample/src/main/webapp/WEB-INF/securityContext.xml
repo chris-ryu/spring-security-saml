@@ -55,16 +55,18 @@
 	</bean>
 
 	<!-- Handler deciding where to redirect user after successful login -->
+	<!-- Handler
 	<bean id="successRedirectHandler"
 		  class="org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler">
 		<property name="defaultTargetUrl" value="/"/>
 	</bean>
+	-->
 	<!--
 	Use the following for interpreting RelayState coming from unsolicited response as redirect URL:
+	-->
 	<bean id="successRedirectHandler" class="org.springframework.security.saml.SAMLRelayStateSuccessHandler">
 	   <property name="defaultTargetUrl" value="/" />
 	</bean>
-	-->
 
 	<!-- Handler deciding where to redirect user after failed login -->
 	<bean id="failureRedirectHandler"
@@ -93,9 +95,9 @@
 	<!-- Logger for SAML messages and events -->
 	<bean id="samlLogger" class="org.springframework.security.saml.log.SAMLDefaultLogger">
 		<!-- Enable these to see the actual SAML Messages in logs -->
-		<!-- <property name="logAllMessages" value="true"/>  -->
-		<!-- <property name="logErrors" value="true"/>  -->
-		<!-- <property name="logMessagesOnException" value="true"/>  -->
+		 <property name="logAllMessages" value="true"/>
+		 <property name="logErrors" value="true"/>
+		 <property name="logMessagesOnException" value="true"/>
 	</bean>
 
 	<!-- Central storage of cryptographic keys -->
@@ -115,6 +117,7 @@
 		<property name="defaultProfileOptions">
 			<bean class="org.springframework.security.saml.websso.WebSSOProfileOptions">
 				<property name="includeScoping" value="false"/>
+				<property name="relayState" value="/handleSaml.jsp"/>
 			</bean>
 		</property>
 	</bean>
@@ -128,9 +131,11 @@
 	<bean id="metadataGeneratorFilter" class="org.springframework.security.saml.metadata.MetadataGeneratorFilter">
 		<constructor-arg>
 			<bean class="org.springframework.security.saml.metadata.MetadataGenerator">
+				<property name="entityId" value="http://localhost:8080/saml/sp"/>
 				<property name="extendedMetadata">
 					<bean class="org.springframework.security.saml.metadata.ExtendedMetadata">
 						<property name="idpDiscoveryEnabled" value="true"/>
+						<property name="signMetadata" value="false"/>
 					</bean>
 				</property>
 			</bean>
@@ -175,7 +180,7 @@
 				<bean class="org.opensaml.saml2.metadata.provider.HTTPMetadataProvider">
 					<!-- URL containing the metadata -->
 					<constructor-arg>
-						<value type="java.lang.String">https://idp.ssocircle.com/idp-meta.xml</value>
+						<value type="java.lang.String">https://registry.iugj.ac.kr/rr3/metadata/federation/iu-gj/IDP/metadata.xml</value>
 					</constructor-arg>
 					<!-- Timeout for metadata loading in ms -->
 					<constructor-arg>
@@ -201,7 +206,7 @@
 	</bean>
 
 	<!-- SAML Authentication Provider responsible for validating of received SAML messages -->
-	<bean id="samlAuthenticationProvider" class="org.springframework.security.saml.SAMLAuthenticationProvider">
+	<bean id="samlAuthenticationProvider" class="org.springframework.security.saml.SAMLAuthenticationProviderCustom">
 		<!-- OPTIONAL property: can be used to store/load user data after login -->
 		<!--
 		<property name="userDetails" ref="bean" />
